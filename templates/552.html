@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Erro de SSL{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Erro de SSL</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-lock fa-4x text-warning mb-3"></i>
+                    <h4 class="mb-3">Erro 552</h4>
+                    <p class="mb-4">Ocorreu um erro na conexão SSL com o servidor web.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        Voltar para o início
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome do Aluno</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ student.name if student else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="school_id" class="form-label">Escola</label>
+                            <select class="form-select" id="school_id" name="school_id" required>
+                                <option value="">Selecione uma escola</option>
+                                {% for school in schools %}
+                                <option value="{{ school.id }}" 
+                                        {% if student and student.school_id == school.id %}selected{% endif %}>
+                                    {{ school.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="stop_id" class="form-label">Ponto de Parada</label>
+                            <select class="form-select" id="stop_id" name="stop_id" required>
+                                <option value="">Selecione um ponto de parada</option>
+                                {% for stop in stops %}
+                                <option value="{{ stop.id }}"
+                                        {% if student and student.stop_id == stop.id %}selected{% endif %}>
+                                    {{ stop.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('students', route_id=route_id) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const routeSelect = document.getElementById('route_id');
+    const stopSelect = document.getElementById('stop_id');
+    
+    if (routeSelect) {
+        routeSelect.addEventListener('change', function() {
+            const routeId = this.value;
+            if (routeId) {
+                fetch(`/api/stops/${routeId}`)
+                    .then(response => response.json())
+                    .then(stops => {
+                        stopSelect.innerHTML = '<option value="">Selecione um ponto de parada</option>';
+                        stops.forEach(stop => {
+                            const option = document.createElement('option');
+                            option.value = stop.id;
+                            option.textContent = stop.name;
+                            stopSelect.appendChild(option);
+                        });
+                    });
+            } else {
+                stopSelect.innerHTML = '<option value="">Selecione um ponto de parada</option>';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 

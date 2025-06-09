@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="plate" class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="plate" name="plate" 
+                                   value="{{ bus.plate if bus else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="model" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="model" name="model" 
+                                   value="{{ bus.model if bus else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="fuel_efficiency" class="form-label">Eficiência de Combustível (km/l)</label>
+                            <input type="number" step="0.01" class="form-control" id="fuel_efficiency" name="fuel_efficiency" 
+                                   value="{{ bus.fuel_efficiency if bus else '' }}" required>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('buses') }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

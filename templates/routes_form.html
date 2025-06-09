@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome da Rota</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ route.name if route else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="distance" class="form-label">Distância (km)</label>
+                            <input type="number" step="0.01" class="form-control" id="distance" name="distance" 
+                                   value="{{ route.distance if route else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bus_id" class="form-label">Ônibus</label>
+                            <select class="form-select" id="bus_id" name="bus_id" required>
+                                <option value="">Selecione um ônibus</option>
+                                {% for bus in buses %}
+                                <option value="{{ bus.id }}" {% if route and route.bus_id == bus.id %}selected{% endif %}>
+                                    {{ bus.plate }} - {{ bus.model }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if not buses %}
+                            <div class="form-text text-danger">
+                                Não há ônibus disponíveis para atribuir a esta rota. 
+                                Adicione um ônibus primeiro ou verifique se todos os ônibus já não estão atribuídos a outras rotas.
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('routes') }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

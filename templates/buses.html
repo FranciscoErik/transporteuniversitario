@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Ônibus{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Ônibus</h2>
+        <a href="{{ url_for('add_bus') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Novo Ônibus
+        </a>
+    </div>
+
+    {% if buses %}
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Eficiência (km/l)</th>
+                            <th>Motorista</th>
+                            <th>Monitor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bus in buses %}
+                        <tr>
+                            <td>{{ bus.plate }}</td>
+                            <td>{{ bus.model }}</td>
+                            <td>{{ bus.fuel_efficiency }}</td>
+                            <td>{{ bus.driver_name or 'Não atribuído' }}</td>
+                            <td>{{ bus.monitor_name or 'Não atribuído' }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('edit_bus', id=bus.id) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ url_for('delete_bus', id=bus.id) }}" 
+                                          method="POST" 
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Tem certeza que deseja excluir este ônibus?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Nenhum ônibus cadastrado. Clique em "Novo Ônibus" para começar.
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Custo Diário{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Registrar Custo Diário</h3>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="bus_id" class="form-label">Ônibus</label>
+                            <select class="form-select" id="bus_id" name="bus_id" required>
+                                <option value="">Selecione um ônibus</option>
+                                {% for bus in buses %}
+                                <option value="{{ bus.id }}" data-efficiency="{{ bus.fuel_efficiency }}">{{ bus.plate }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="date" name="date" 
+                                   value="{{ today }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="distance" class="form-label">Distância Percorrida (km)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="distance" 
+                                   name="distance" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="fuel_price" class="form-label">Preço do Combustível (R$/L)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="fuel_price" 
+                                   name="fuel_price" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="fuel_cost" class="form-label">Custo Total com Combustível (R$)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="fuel_cost" 
+                                   name="fuel_cost" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="driver_salary" class="form-label">Salário do Motorista (R$)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="driver_salary" 
+                                   name="driver_salary" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="monitor_salary" class="form-label">Salário do Monitor (R$)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="monitor_salary" 
+                                   name="monitor_salary" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('financial') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const busSelect = document.getElementById('bus_id');
+    const distanceInput = document.getElementById('distance');
+    const fuelPriceInput = document.getElementById('fuel_price');
+    const fuelCostInput = document.getElementById('fuel_cost');
+    
+    function calculateFuelCost() {
+        const selectedOption = busSelect.options[busSelect.selectedIndex];
+        const efficiency = parseFloat(selectedOption.dataset.efficiency);
+        const distance = parseFloat(distanceInput.value) || 0;
+        const fuelPrice = parseFloat(fuelPriceInput.value) || 0;
+        
+        if (efficiency && distance && fuelPrice) {
+            const fuelCost = (distance / efficiency) * fuelPrice;
+            fuelCostInput.value = fuelCost.toFixed(2);
+        } else {
+            fuelCostInput.value = '';
+        }
+    }
+    
+    busSelect.addEventListener('change', calculateFuelCost);
+    distanceInput.addEventListener('input', calculateFuelCost);
+    fuelPriceInput.addEventListener('input', calculateFuelCost);
+});
+</script>
+{% endblock %} 

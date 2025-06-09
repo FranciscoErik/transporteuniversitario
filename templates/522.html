@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Conexão expirada{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="error-message">
+            <h1 class="display-4">Erro 522</h1>
+            <i class="fas fa-clock fa-4x mb-4"></i>
+            <p class="lead">A conexão com o servidor expirou.</p>
+            <p>O servidor web não respondeu a tempo.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-4">
+                <i class="fas fa-home me-2"></i>Voltar para a página inicial
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

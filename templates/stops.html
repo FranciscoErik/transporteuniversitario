@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Pontos de Parada - {{ route.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Pontos de Parada</h2>
+            <p class="text-muted mb-0">
+                Rota: {{ route.name }} (Ônibus: {{ route.bus_plate }} - {{ route.bus_model }})
+            </p>
+        </div>
+        <a href="{{ url_for('add_stop', route_id=route.id) }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Novo Ponto de Parada
+        </a>
+    </div>
+
+    {% if stops %}
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stop in stops %}
+                        <tr>
+                            <td>{{ stop.name }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('edit_stop', id=stop.id) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ url_for('delete_stop', id=stop.id) }}" 
+                                          method="POST" 
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Tem certeza que deseja excluir este ponto de parada?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Nenhum ponto de parada cadastrado. Clique em "Novo Ponto de Parada" para começar.
+    </div>
+    {% endif %}
+
+    <div class="mt-3">
+        <a href="{{ url_for('routes') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar para Rotas
+        </a>
+    </div>
+</div>
+{% endblock %} 
